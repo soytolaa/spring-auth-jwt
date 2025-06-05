@@ -57,21 +57,23 @@ public class AuthServiceImp implements AuthService {
                 .userName(userRequest.getUserName())
                 .email(userRequest.getEmail())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
-                .type("credential")
+                .type(userRequest.getType())
                 .isActive(true)
-                .isVerified(false)
+                .isVerified(!userRequest.getType().equals("credentials"))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        Integer otp = optCode();
-        emailService.sendEmail(userRequest.getEmail(), otp.toString());
-        otpRepository.save(Otp.builder()
-                .otpCode(otp)
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .expiredAt(LocalDateTime.now().plusMinutes(1))
-                .isVerified(false)
-                .build());
+        if (userRequest.getType().equals("credentials")) {
+            Integer otp = optCode();
+            emailService.sendEmail(userRequest.getEmail(), otp.toString());
+            otpRepository.save(Otp.builder()
+                    .otpCode(otp)
+                    .createdAt(LocalDateTime.now())
+                    .user(user)
+                    .expiredAt(LocalDateTime.now().plusMinutes(1))
+                    .isVerified(false)
+                    .build());
+        }
         return modelMapper.map(userRepository.save(user), UserResponse.class);
     }
 
@@ -106,13 +108,11 @@ public class AuthServiceImp implements AuthService {
         Optional<Otp> otpEntity = otpRepository.findByUser(user.get());
         if (otpEntity.isPresent()) {
             Otp existingOtp = otpEntity.get();
-            if (!existingOtp.getIsVerified()) {
-                existingOtp.setOtpCode(otp);
-                existingOtp.setCreatedAt(LocalDateTime.now());
-                existingOtp.setExpiredAt(LocalDateTime.now().plusMinutes(1));
-                existingOtp.setIsVerified(false);
-                otpRepository.save(existingOtp);
-            }
+            existingOtp.setOtpCode(otp);
+            existingOtp.setCreatedAt(LocalDateTime.now());
+            existingOtp.setExpiredAt(LocalDateTime.now().plusMinutes(1));
+            existingOtp.setIsVerified(false);
+            otpRepository.save(existingOtp);
         }
         return otp;
     }

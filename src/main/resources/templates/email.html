@@ -3,48 +3,254 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OTP</title>
+    <title>StreamLine - Email Verification</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+    </style>
   </head>
-  <body>
+  <body style="margin: 0; padding: 0; background-color: #f0fdf4">
     <div
       style="
-        font-family: 'Battambang', system-ui;
-        width: 500px;
-        text-align: center;
-        margin: auto;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       "
     >
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Spring_Framework_Logo_2018.svg/2560px-Spring_Framework_Logo_2018.svg.png"
-        alt="image"
-        style="width: 200px; height: 50px"
-      />
-      <h2 id="head">OTP</h2>
-      <p style="font-size: 14px">
-        Before you sign in, we need to verify your identity. Enter the following
-        code on the sign-in page.
-      </p>
-      <h2
-        id="num"
+      <!-- Header -->
+      <div
         style="
-          margin: auto;
-          background-color: antiquewhite;
-          padding: 10px;
+          background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+          padding: 32px 24px;
           text-align: center;
         "
-        th:text="${code}"
-      ></h2>
-      <p>
-        Welcome to the Expense Tracking Application. Here, you can monitor your
-        expenses and manage your budget effectively.
-      </p>
+      >
+        <h1
+          style="
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+            margin-bottom: 8px;
+          "
+        >
+          Email Verification
+        </h1>
+
+        <p style="color: rgba(255, 255, 255, 0.9); font-size: 16px; margin: 0">
+          Secure your account with the verification code below
+        </p>
+      </div>
+
+      <!-- Content -->
+      <div style="padding: 40px 24px">
+        <div style="text-align: center; margin-bottom: 32px">
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+              border-radius: 50%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 24px;
+            "
+          >
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 15L17 10H7L12 15Z" fill="#059669" />
+              <path
+                d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z"
+                stroke="#059669"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M22 6L12 13L2 6"
+                stroke="#059669"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+
+          <h2
+            style="
+              color: #1f2937;
+              font-size: 20px;
+              font-weight: 600;
+              margin: 0 0 16px 0;
+            "
+          >
+            Verify Your Email Address
+          </h2>
+
+          <p
+            style="
+              color: #6b7280;
+              font-size: 16px;
+              line-height: 1.5;
+              margin: 0 0 32px 0;
+            "
+          >
+            Before you can access your StreamLine account, we need to verify
+            your identity. Enter the following 6-digit code on the verification
+            page.
+          </p>
+        </div>
+
+        <!-- OTP Code -->
+        <div
+          style="
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #059669;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 32px;
+          "
+        >
+          <p
+            style="
+              color: #059669;
+              font-size: 14px;
+              font-weight: 500;
+              margin: 0 0 8px 0;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            "
+          >
+            Your Verification Code
+          </p>
+
+          <div
+            style="
+              font-size: 36px;
+              font-weight: 700;
+              color: black;
+              letter-spacing: 0.1em;
+            "
+            th:text="${code}"
+          >
+            123456
+          </div>
+
+          <p style="color: #6b7280; font-size: 12px; margin: 8px 0 0 0">
+            This code expires in 1 minutes
+          </p>
+        </div>
+
+        <!-- Security Notice -->
+        <div
+          style="
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 32px;
+          "
+        >
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style="margin-top: 2px; flex-shrink: 0"
+            >
+              <path
+                d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                stroke="#f59e0b"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <div>
+              <p
+                style="
+                  color: #92400e;
+                  font-size: 14px;
+                  font-weight: 500;
+                  margin: 0 0 4px 0;
+                "
+              >
+                Security Notice
+              </p>
+              <p
+                style="
+                  color: #92400e;
+                  font-size: 13px;
+                  margin: 0;
+                  line-height: 1.4;
+                "
+              >
+                Never share this code with anyone. StreamLine will never ask for
+                your verification code via phone or email.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Welcome Message -->
+        <div style="text-align: center">
+          <h3
+            style="
+              color: #1f2937;
+              font-size: 18px;
+              font-weight: 600;
+              margin: 0 0 12px 0;
+            "
+          >
+            Welcome to StreamLine!
+          </h3>
+
+          <p
+            style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0"
+          >
+            Discover curated products that simplify your life. Quality meets
+            affordability with our streamlined shopping experience. Start
+            exploring our collections today!
+          </p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          background-color: #f9fafb;
+          border-top: 1px solid #e5e7eb;
+          padding: 24px;
+          text-align: center;
+        "
+      >
+        <p style="color: #6b7280; font-size: 12px; margin: 0 0 8px 0">
+          This email was sent to verify your StreamLine account.
+        </p>
+
+        <p style="color: #9ca3af; font-size: 11px; margin: 0">
+          © 2024 StreamLine. All rights reserved.
+        </p>
+      </div>
     </div>
   </body>
 </html>
