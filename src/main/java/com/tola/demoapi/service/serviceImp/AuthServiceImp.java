@@ -49,10 +49,24 @@ public class AuthServiceImp implements AuthService {
         if (!userRequest.getPassword().equals(userRequest.getConfirmPassword())) {
             throw new BadRequestException("Password and confirm password do not match");
         }
+
         Optional<User> existUser = userRepository.findByEmail(userRequest.getEmail());
+
+        // If user exists and type is google, update the user
+        if (existUser.isPresent() && userRequest.getType().equals("google")) {
+            User user = existUser.get();
+            user.setUserName(userRequest.getUserName());
+            user.setType("google");
+            user.setIsVerified(true);
+            user.setUpdatedAt(LocalDateTime.now());
+            return modelMapper.map(userRepository.save(user), UserResponse.class);
+        }
+
+        // For new users or non-google users, check if email exists
         if (existUser.isPresent()) {
             throw new BadRequestException("Email already exist!");
         }
+
         User user = User.builder()
                 .userName(userRequest.getUserName())
                 .email(userRequest.getEmail())
