@@ -9,4 +9,12 @@ public interface ProductService {
     List<ProductResponse> getAllProducts();
 
     ProductResponse createProducts(ProductRequest productRequest);
+
+    ProductResponse updateProduct(Integer id, ProductRequest productRequest);
+
+    void deleteProduct(Integer id);
+
+    ProductResponse getProductById(Integer id);
+
+    List<ProductResponse> searchProduct(String keyword);
 }

@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import java.util.List;
+import com.tola.demoapi.model.enums.Type;
+import com.tola.demoapi.model.enums.Role;
 
 @Entity(name = "users")
 @Builder
@@ -41,7 +43,7 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "type")
-    private String type; // social login or credential login
+    private Type type; // social login or credential login
 
     @Column(name = "created_at")
     private LocalDateTime createdAt; // created at
@@ -58,9 +60,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Otp> otps;
 
+    @Column(name = "role", length = 20, nullable = false)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.getValue()));
     }
 
     @Override

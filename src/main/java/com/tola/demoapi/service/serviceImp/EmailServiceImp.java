@@ -23,7 +23,7 @@ public class EmailServiceImp implements EmailService {
         context.setVariable("code", otp);
         String processedString = templateEngine.process("email.html", context);
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setFrom("classsphere.edu@gmail.com");
+        helper.setFrom("coocon.dev@gmail.com");
         helper.setTo(email);
         helper.setSubject("Code Verify");
         helper.setText(processedString, true);

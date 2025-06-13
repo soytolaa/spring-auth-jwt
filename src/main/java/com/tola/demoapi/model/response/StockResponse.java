@@ -1,23 +1,18 @@
 package com.tola.demoapi.model.response;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponse {
-    private Integer proId;
-    private String proName;
-    private String proDes;
-    private BigDecimal proPrice;
-    private Integer catId;
+@Data
+public class StockResponse {
+    private Integer stockId;
+    private Integer stockQuantity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

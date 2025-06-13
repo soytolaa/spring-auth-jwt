@@ -1,54 +1,61 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.5.0'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'java' // java plugin
+    id 'org.springframework.boot' version '3.5.0' // spring boot plugin
+    id 'io.spring.dependency-management' version '1.1.7' // dependency management
 }
 
-group = 'com.tola'
-version = '0.0.1-SNAPSHOT'
+group = 'com.tola' // group id
+version = '0.0.1-SNAPSHOT' // version 
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(21) // java version
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+configurations { // configurations
+    compileOnly { // compile only
+        extendsFrom annotationProcessor // extends from annotation processor
     }
 }
 
-repositories {
-    mavenCentral()
+repositories { // repositories
+    mavenCentral() // maven central repository
 }
 
-dependencies {
+dependencies { // dependencies
+    // spring boot jpa for database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // spring boot web for rest api
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // spring boot mail for email
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // test for security
     testImplementation 'org.springframework.security:spring-security-test'
-    compileOnly 'org.projectlombok:lombok'
+    // dev tools for hot reload
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    // database postgres
     runtimeOnly 'org.postgresql:postgresql'
+    // lombok for model class
     annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    // test for rest api
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' 
     // open api swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
-    // mapper
+    // mapper for model class to response class
     implementation 'org.modelmapper:modelmapper:3.1.1'
-    //spring security jwt
+    //spring security jwt for authentication and authorization
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-    // template engine
+    // template engine for email thymeleaf
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+tasks.named('test') { // test task
+    useJUnitPlatform() // use junit platform
 }

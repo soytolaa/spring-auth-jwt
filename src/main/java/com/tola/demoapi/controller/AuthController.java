@@ -22,15 +22,19 @@ import com.tola.demoapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Authentication", description = "Authentication and Authorization API for user registration, login, and password management")
 public class AuthController {
         private final AuthService authService;
 
         @PostMapping("/register")
+        @Operation(summary = "Register a new user with email, password, and name")
         public ResponseEntity<?> register(@RequestBody UserRequest userRequest)
                         throws MessagingException, UnsupportedEncodingException {
                 ApiResponse<?> response = ApiResponse.builder()
@@ -44,6 +48,7 @@ public class AuthController {
         }
 
         @PutMapping("/verify-otp")
+        @Operation(summary = "Verify OTP with otpCode")
         public ResponseEntity<?> verifyOtp(@RequestParam(name = "otpCode") Integer otpCode) {
                 ApiResponse<?> response = ApiResponse.builder()
                                 .message("OTP verified successfully")
@@ -57,6 +62,7 @@ public class AuthController {
 
         // resend otp
         @PutMapping("/resend-otp")
+        @Operation(summary = "Resend OTP to user's email")
         public ResponseEntity<?> resendOtp(@RequestParam(name = "email") String email)
                         throws MessagingException, UnsupportedEncodingException {
                 ApiResponse<?> response = ApiResponse.builder()
@@ -71,6 +77,7 @@ public class AuthController {
 
         // login
         @PostMapping("/login")
+        @Operation(summary = "Login with email and password")
         public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest)
                         throws MessagingException, UnsupportedEncodingException {
                 ApiResponse<?> response = ApiResponse.builder()
@@ -86,6 +93,7 @@ public class AuthController {
         // change password
         @SecurityRequirement(name = "bearerAuth")
         @PutMapping("/change-password")
+        @Operation(summary = "Change password with new password")
         public ResponseEntity<?> changePassword(@RequestBody UserRequest userRequest) {
                 ApiResponse<?> response = ApiResponse.builder()
                                 .message("Password changed successfully")
@@ -99,6 +107,7 @@ public class AuthController {
 
         @SecurityRequirement(name = "bearerAuth")
         @GetMapping("/user-detail")
+        @Operation(summary = "Get user details with email")
         public ResponseEntity<?> getUserDetails(@RequestParam(name = "email") String email) {
                 ApiResponse<?> response = ApiResponse.builder()
                                 .message("Get user detail successfully")
@@ -111,6 +120,7 @@ public class AuthController {
         }
 
         @PutMapping("/forgot-password")
+        @Operation(summary = "Forgot password with email")
         public ResponseEntity<?> forgotPassword(@RequestBody ForgetRequest forgetRequest) {
                 ApiResponse<?> response = ApiResponse.builder()
                                 .message("Forgot password successfully")
@@ -123,6 +133,7 @@ public class AuthController {
         }
 
         @GetMapping("/recovery-password")
+        @Operation(summary = "Recovery password with email")
         public ResponseEntity<?> recovery(@RequestParam(name = "email") String email)
                         throws MessagingException, UnsupportedEncodingException {
                 ApiResponse<?> response = ApiResponse.builder()

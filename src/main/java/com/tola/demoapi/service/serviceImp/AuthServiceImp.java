@@ -27,6 +27,8 @@ import com.tola.demoapi.exception.BadRequestException;
 import com.tola.demoapi.exception.NotFoundException;
 import com.tola.demoapi.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
+import com.tola.demoapi.model.enums.Type;
+import com.tola.demoapi.model.enums.Role;
 
 @Slf4j
 @Service
@@ -51,17 +53,17 @@ public class AuthServiceImp implements AuthService {
         }
 
         Optional<User> existUser = userRepository.findByEmail(userRequest.getEmail());
-
         // If user exists and type is google, update the user
-        if (existUser.isPresent() && userRequest.getType().equals("google")) {
+        if (existUser.isPresent()
+                && (userRequest.getType().equals(Type.GOOGLE) || userRequest.getType().equals(Type.GITHUB))) {
             User user = existUser.get();
             user.setUserName(userRequest.getUserName());
-            user.setType("google");
+            user.setType(userRequest.getType().equals(Type.GOOGLE) ? Type.GOOGLE : Type.GITHUB);
+            user.setRole(Role.USER); // default role is user
             user.setIsVerified(true);
             user.setUpdatedAt(LocalDateTime.now());
             return modelMapper.map(userRepository.save(user), UserResponse.class);
         }
-
         // For new users or non-google users, check if email exists
         if (existUser.isPresent()) {
             throw new BadRequestException("Email already exist!");
@@ -73,11 +75,12 @@ public class AuthServiceImp implements AuthService {
                 .password(passwordEncoder.encode(userRequest.getPassword()))
                 .type(userRequest.getType())
                 .isActive(true)
-                .isVerified(!userRequest.getType().equals("credentials"))
+                .isVerified(!userRequest.getType().equals(Type.CREDENTIALS))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .role(Role.USER) // default role is user
                 .build();
-        if (userRequest.getType().equals("credentials")) {
+        if (userRequest.getType().equals(Type.CREDENTIALS)) {
             Integer otp = optCode();
             emailService.sendEmail(userRequest.getEmail(), otp.toString());
             otpRepository.save(Otp.builder()
@@ -139,7 +142,7 @@ public class AuthServiceImp implements AuthService {
             throw new NotFoundException("User email not found!");
         }
         if (!passwordEncoder.matches(userLoginRequest.getPassword(), user.get().getPassword())) {
-            throw new BadRequestException("Invalid password!");
+            throw new BadRequestException("Incorrect password!");
         }
         if (!user.get().getIsVerified()) {
             Integer otp = optCode();
@@ -167,7 +170,7 @@ public class AuthServiceImp implements AuthService {
         if (user.isEmpty()) {
             throw new NotFoundException("User email not found!");
         }
-        if (!user.get().getType().equals("credential")) {
+        if (!user.get().getType().equals(Type.CREDENTIALS)) {
             throw new BadRequestException("Change password is not allowed for social login user!");
         }
         user.get().setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -179,7 +182,7 @@ public class AuthServiceImp implements AuthService {
     public UserResponse getUserDetails(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
-            throw new NotFoundException("User email not found");
+            throw new NotFoundException("User email not found!");
         }
         return modelMapper.map(user.get(), UserResponse.class);
     }
@@ -190,7 +193,7 @@ public class AuthServiceImp implements AuthService {
         if (user.isEmpty()) {
             throw new NotFoundException("User email not found!");
         }
-        if (!user.get().getType().equals("credential")) {
+        if (!user.get().getType().equals(Type.CREDENTIALS)) {
             throw new BadRequestException("Forgot password is not allowed for social login user!");
         }
         if (!forgetRequest.getNewPassword().equals(forgetRequest.getConfirmNewPassword())) {
@@ -209,7 +212,7 @@ public class AuthServiceImp implements AuthService {
         if (user.isEmpty()) {
             throw new NotFoundException("User email not found!");
         }
-        if (!user.get().getType().equals("credential")) {
+        if (!user.get().getType().equals(Type.CREDENTIALS)) {
             throw new BadRequestException("Recovery password is not allowed for social login user!");
         }
         Integer otp = optCode();

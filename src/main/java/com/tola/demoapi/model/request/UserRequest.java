@@ -1,6 +1,7 @@
 package com.tola.demoapi.model.request;
 
 import lombok.*;
+import com.tola.demoapi.model.enums.Type;
 
 @Data
 @AllArgsConstructor
@@ -11,5 +12,5 @@ public class UserRequest {
     private String email;
     private String password;
     private String confirmPassword;
-    private String type;
+    private Type type;
 }
