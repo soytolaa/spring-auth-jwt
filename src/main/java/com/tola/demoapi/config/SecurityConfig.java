@@ -34,15 +34,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/v1/auth/**",
                                                                 "/v3/api-docs/**",
                                                                 "/swagger-ui/**",
-                                                                "/swagger-ui.html",
-                                                                "/api/v1/products/**",
-                                                                "/api/v1/categories/**",
-                                                                "/api/v1/stocks/**",
-                                                                "/api/v1/purchases/**")
+                                                                "/swagger-ui.html")
                                                 .permitAll()
-                                                // .requestMatchers("/api/v1/products/**", "/api/v1/categories/**",
-                                                // "/api/v1/stocks/**", "/api/v1/purchases/**")
-                                                // .authenticated()
+                                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntrypoint))
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
