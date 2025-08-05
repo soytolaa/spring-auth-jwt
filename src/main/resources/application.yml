@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: demo-api
+
+  # postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo
+    username: postgres
+    password: 1234
+  # Jpa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        descriptor:
+          sql:
+            BasicBinder: TRACE
+  # mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: classsphere.edu@gmail.com
+    password: maqh dumt rbgp zvhp
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        mime:
+          charset: UTF
+# swagger
+springdoc:
+  default-produces-media-type: application/json
+  api-docs:
+    version: openapi-3-0
+  swagger-ui:
+    operationsSorter: method
+    tagsSorter: alpha
+    path: /swagger-ui
+
+# logging
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate.sql: DEBUG
+    com.tola.demoapi: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
