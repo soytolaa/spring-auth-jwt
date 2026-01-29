@@ -1,5 +1,6 @@
 package com.tola.demoapi.config;
 
+import com.tola.demoapi.model.entities.User;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
@@ -69,21 +70,20 @@ public class BeanConfig {
     }
 
 //    @Bean
-//    public Long getCurrentUserId() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    public UUID getCurrentUserId() {
+//        Authentication authentication = SecurityContextHolder
+//                .getContext()
+//                .getAuthentication();
 //
 //        if (authentication == null || !authentication.isAuthenticated()) {
-//            throw new AuthenticationCredentialsNotFoundException("No authentication found");
+//            return null;
 //        }
-//
 //        Object principal = authentication.getPrincipal();
 //
-//        if (principal instanceof UserDetails) {
-//            return Long.parseLong(((UserDetails) principal).getUsername());
-//        } else if (principal instanceof String) {
-//            return Long.parseLong((String) principal);
+//        if (principal instanceof User user) {
+//            return user.getUserId();
 //        }
-//
-//        throw new IllegalArgumentException("Cannot extract user ID from principal");
+//        return null;
 //    }
+
 }

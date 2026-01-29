@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.time.LocalDateTime;
-import com.tola.demoapi.model.response.ExceptionResponse;
+import com.tola.demoapi.utils.ExceptionResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
