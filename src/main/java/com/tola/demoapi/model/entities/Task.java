@@ -1,5 +1,6 @@
 package com.tola.demoapi.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tola.demoapi.model.enums.PriorityStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import com.tola.demoapi.model.enums.Status;
 
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
@@ -20,8 +20,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String description;
     @Enumerated(EnumType.STRING)
@@ -30,11 +30,11 @@ public class Task {
     private PriorityStatus priorityStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UUID assigner;
-    private List<UUID> assignees;
+    private Long assigner;
     private LocalDateTime assignedAt;
     private LocalDateTime dueAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({ "tasks", "userProjects" })
     private Project project;
 }

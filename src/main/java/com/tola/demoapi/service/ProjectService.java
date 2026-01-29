@@ -2,21 +2,21 @@ package com.tola.demoapi.service;
 
 import com.tola.demoapi.model.request.ProjectRequest;
 import com.tola.demoapi.model.response.ProjectResponse;
+import com.tola.demoapi.model.response.UserResponse;
 import java.util.List;
-import java.util.UUID;
 
 public interface ProjectService {
     List<ProjectResponse> getAllProjectsByUser();
 
     ProjectResponse createProject(ProjectRequest projectRequest);
 
-    ProjectResponse updateProject(UUID id, ProjectRequest projectRequest);
+    ProjectResponse updateProject(Long id, ProjectRequest projectRequest);
 
-    ProjectResponse addUserToProjectByEmail(UUID id, String email);
+    ProjectResponse addUserToProjectByEmail(Long id, String email);
 
-    ProjectResponse deactivateProject(UUID id);
+    ProjectResponse activeAndDeactiveProject(Long id, Boolean isActive);
 
-    ProjectResponse activateProject(UUID id);
+    Boolean deleteProject(Long id);
 
-    Boolean deleteProject(UUID id);
+    List<UserResponse> getUserInProject(Long id);
 }

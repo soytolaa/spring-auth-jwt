@@ -1,7 +1,6 @@
 package com.tola.demoapi.model.entities;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +13,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "otps")
 @Builder
@@ -22,8 +22,8 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class Otp {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID otpId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long otpId;
 
     @Column(name = "otp_code", length = 6, nullable = false)
     private Integer otpCode;

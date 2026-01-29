@@ -19,8 +19,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.context.Context;
 
-import java.util.UUID;
-
 @Configuration
 @RequiredArgsConstructor
 public class BeanConfig {
@@ -69,21 +67,21 @@ public class BeanConfig {
         return new ModelAndView();
     }
 
-//    @Bean
-//    public UUID getCurrentUserId() {
-//        Authentication authentication = SecurityContextHolder
-//                .getContext()
-//                .getAuthentication();
-//
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            return null;
-//        }
-//        Object principal = authentication.getPrincipal();
-//
-//        if (principal instanceof User user) {
-//            return user.getUserId();
-//        }
-//        return null;
-//    }
+    // @Bean
+    // public UUID getCurrentUserId() {
+    // Authentication authentication = SecurityContextHolder
+    // .getContext()
+    // .getAuthentication();
+    //
+    // if (authentication == null || !authentication.isAuthenticated()) {
+    // return null;
+    // }
+    // Object principal = authentication.getPrincipal();
+    //
+    // if (principal instanceof User user) {
+    // return user.getUserId();
+    // }
+    // return null;
+    // }
 
 }

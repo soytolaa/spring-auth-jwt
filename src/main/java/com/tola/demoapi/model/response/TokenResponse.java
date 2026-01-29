@@ -1,7 +1,5 @@
 package com.tola.demoapi.model.response;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenResponse {
-    private UUID userId;
+    private Long userId;
     private String email;
     private String accessToken;
 }
