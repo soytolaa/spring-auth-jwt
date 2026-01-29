@@ -13,8 +13,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-
-@Entity(name = "otps")
+import jakarta.persistence.Table;
+@Entity
+@Table(name = "otps")
 @Builder
 @Data
 @NoArgsConstructor

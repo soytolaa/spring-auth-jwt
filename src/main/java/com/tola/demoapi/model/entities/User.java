@@ -1,9 +1,8 @@
 package com.tola.demoapi.model.entities;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +18,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
-import java.util.List;
 import com.tola.demoapi.model.enums.Type;
 import com.tola.demoapi.model.enums.Role;
+import jakarta.persistence.Table;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @Builder
 @Data
 @NoArgsConstructor

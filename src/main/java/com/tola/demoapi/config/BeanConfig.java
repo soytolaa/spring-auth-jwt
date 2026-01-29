@@ -7,12 +7,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.context.Context;
+
+import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -50,7 +56,7 @@ public class BeanConfig {
     @Bean
     MimeMessage message() {
         return javaMailSender.createMimeMessage();
-    };
+    }
 
     @Bean
     public Context context() {
@@ -62,4 +68,22 @@ public class BeanConfig {
         return new ModelAndView();
     }
 
+//    @Bean
+//    public Long getCurrentUserId() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            throw new AuthenticationCredentialsNotFoundException("No authentication found");
+//        }
+//
+//        Object principal = authentication.getPrincipal();
+//
+//        if (principal instanceof UserDetails) {
+//            return Long.parseLong(((UserDetails) principal).getUsername());
+//        } else if (principal instanceof String) {
+//            return Long.parseLong((String) principal);
+//        }
+//
+//        throw new IllegalArgumentException("Cannot extract user ID from principal");
+//    }
 }

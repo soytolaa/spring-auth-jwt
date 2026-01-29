@@ -30,6 +30,7 @@ dependencies { // dependencies
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // spring boot mail for email
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     // test for security
     testImplementation 'org.springframework.security:spring-security-test'
     // dev tools for hot reload
