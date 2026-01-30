@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.tola.demoapi.model.enums.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -37,4 +38,9 @@ public class Task {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     @JsonIgnoreProperties({ "tasks", "userProjects" })
     private Project project;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({ "task" })
+    @Builder.Default
+    private List<UserTask> userTasks = new ArrayList<>();
 }

@@ -13,16 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import com.tola.demoapi.model.request.TaskRequest;
 import com.tola.demoapi.service.TaskService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PutMapping;
 import com.tola.demoapi.model.request.UserTaskRequest;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
 import com.tola.demoapi.model.enums.Status;
 import com.tola.demoapi.model.enums.PriorityStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
@@ -100,7 +103,9 @@ public class TaskController {
 
     @PutMapping("/{id}/update-due-date")
     @Operation(summary = "Update task due date")
-    public ResponseEntity<?> updateTaskDueDate(@PathVariable Long id, @RequestParam LocalDateTime dueDate) {
+    public ResponseEntity<?> updateTaskDueDate(
+            @PathVariable Long id,
+            @Parameter(description = "Due date and time for the task", required = true, schema = @Schema(type = "string", format = "date-time", example = "2026-02-01T10:00:00")) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate) {
         ApiResponse<?> response = ApiResponse.builder()
                 .message("Task due date updated successfully")
                 .payload(taskService.updateTaskDueDate(id, dueDate))
@@ -117,6 +122,32 @@ public class TaskController {
         ApiResponse<?> response = ApiResponse.builder()
                 .message("Task deleted successfully")
                 .payload(taskService.deleteTask(id))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get task by id")
+    public ResponseEntity<?> getTaskById(@PathVariable Long id) {
+        ApiResponse<?> response = ApiResponse.builder()
+                .message("Task retrieved successfully")
+                .payload(taskService.getTaskById(id))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/project/{projectId}")
+    @Operation(summary = "Get all tasks by project id")
+    public ResponseEntity<?> getAllTasksByProjectId(@PathVariable Long projectId) {
+        ApiResponse<?> response = ApiResponse.builder()
+                .message("Tasks retrieved successfully")
+                .payload(taskService.getAllTasksByProjectId(projectId))
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())

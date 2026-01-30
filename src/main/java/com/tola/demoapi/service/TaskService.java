@@ -15,4 +15,6 @@ public interface TaskService {
     TaskResponse updateTaskPriorityStatus(Long id, PriorityStatus priorityStatus);
     TaskResponse updateTaskDueDate(Long id, LocalDateTime dueDate);
     Boolean deleteTask(Long id);
+    TaskResponse getTaskById(Long id);
+    List<TaskResponse> getAllTasksByProjectId(Long projectId);
 }
