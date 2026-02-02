@@ -1,6 +1,5 @@
 package com.tola.demoapi.model.enums;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum Role {
-    USER("user"),
-    ADMIN("admin"),
-    SUPER_ADMIN("super_admin");
+public enum Status {
+    PENDING("pending"),
+    PROGRESS("progress"),
+    COMPLETED("completed"),
+    CANCELLED("cancelled"),
+    HOLD("hold"),
+    FEEDBACK("feedback");
     private String value;
 }

@@ -1,16 +1,16 @@
-package com.tola.demoapi.model.response;
+package com.tola.demoapi.model.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenResponse {
-    private Long userId;
-    private String email;
-    private String accessToken;
+public class ProjectRequest {
+    private String name;
+    private String description;
 }

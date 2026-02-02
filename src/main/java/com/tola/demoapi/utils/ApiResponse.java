@@ -1,4 +1,4 @@
-package com.tola.demoapi.model.response;
+package com.tola.demoapi.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.*;

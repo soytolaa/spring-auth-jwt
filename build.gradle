@@ -24,12 +24,19 @@ repositories { // repositories
 }
 
 dependencies { // dependencies
+    // MapStruct
+    implementation "org.mapstruct:mapstruct:1.6.3"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.6.3"
+    // Bridge to make MapStruct see Lombok's generated getters/setters
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+
     // spring boot jpa for database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // spring boot web for rest api
     implementation 'org.springframework.boot:spring-boot-starter-web'
     // spring boot mail for email
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     // test for security
     testImplementation 'org.springframework.security:spring-security-test'
     // dev tools for hot reload
@@ -54,8 +61,7 @@ dependencies { // dependencies
     // template engine for email thymeleaf
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
-    implementation 'org.mapstruct:mapstruct:1.6.3'
+
 }
 
 tasks.named('test') { // test task

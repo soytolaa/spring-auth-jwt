@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tola.demoapi.model.request.UserRequest;
 import com.tola.demoapi.model.request.ForgetRequest;
 import com.tola.demoapi.model.request.UserLoginRequest;
-import com.tola.demoapi.model.response.ApiResponse;
+import com.tola.demoapi.utils.ApiResponse;
 import com.tola.demoapi.service.AuthService;
 
 import lombok.RequiredArgsConstructor;

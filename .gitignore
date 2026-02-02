@@ -38,4 +38,11 @@ out/
 
 
 ### Application ###
-application.yml
+#application.yml
+
+# Jenkins
+Jenkinsfile
+.env
+
+#Docker
+Dockerfile

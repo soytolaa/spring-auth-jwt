@@ -1,6 +1,5 @@
 package com.tola.demoapi.model.enums;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum Role {
-    USER("user"),
-    ADMIN("admin"),
-    SUPER_ADMIN("super_admin");
-    private String value;
+public enum PriorityStatus {
+    LOW,
+    MEDIUM,
+    HIGH,
+    URGENT;
+    String value;
 }
