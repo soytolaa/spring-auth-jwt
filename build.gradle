@@ -54,6 +54,8 @@ dependencies { // dependencies
     // template engine for email thymeleaf
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+    implementation 'org.mapstruct:mapstruct:1.6.3'
 }
 
 tasks.named('test') { // test task
