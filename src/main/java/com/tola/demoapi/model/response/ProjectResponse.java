@@ -18,4 +18,5 @@ public class ProjectResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long createdBy;
+    private Integer membersCount;
 }

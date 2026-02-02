@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import com.tola.demoapi.model.response.UserResponse;
 @Builder
 @Data
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class TaskResponse {
     private Status status;
     private Long projectId;
     private Long assigner;
-    private List<Long> assignees;
+    private List<UserResponse> assignees;
     private LocalDateTime assignedAt;
     private LocalDateTime dueAt;
     private LocalDateTime createdAt;

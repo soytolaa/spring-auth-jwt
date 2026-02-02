@@ -35,11 +35,15 @@ public class ProjectServiceImp implements ProjectService {
     private final BeanConfig beanConfig;
 
     @Override
-    public List<ProjectResponse> getAllProjectsByUser() {
-        return userProjectRepository.findByUserUserId(1L).stream()
-                .map(UserProject::getProject)
-                .filter(project -> project.getIsActive() == true)
-                .map(projectMapper::toResponse)
+    public List<ProjectResponse> getAllProjectsByUser() { // add members in each project
+
+        return projectRepository.findAll().stream()
+                .map(project -> {
+                    ProjectResponse projectResponse = projectMapper.toResponse(project);
+                    projectResponse.setMembersCount(userProjectRepository.findByProjectId(project.getId())
+                            .orElseThrow(() -> new NotFoundException("Project not found")).size());
+                    return projectResponse;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -119,5 +123,5 @@ public class ProjectServiceImp implements ProjectService {
                         .build())
                 .collect(Collectors.toList());
     }
-    
+
 }

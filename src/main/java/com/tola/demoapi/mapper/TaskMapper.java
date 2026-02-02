@@ -1,5 +1,6 @@
 package com.tola.demoapi.mapper;
 
+import com.tola.demoapi.model.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;
@@ -16,7 +17,7 @@ public interface TaskMapper {
     //
     // @Mapping(target = "projectId", expression = "java(task.getProject() != null
     // ? task.getProject().getId() : null)")
-     TaskResponse toResponse(Task task, List<Long> assignees, Long projectId);
+     TaskResponse toResponse(Task task, List<UserResponse> assignees, Long projectId);
     //
     // @Mapping(target = "project", ignore = true)
     // @Mapping(target = "assigner", ignore = true)

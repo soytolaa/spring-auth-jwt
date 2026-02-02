@@ -11,9 +11,9 @@ public interface TaskService {
     TaskResponse createTask(TaskRequest taskRequest);
     TaskResponse addUserToTask(UserTaskRequest userTaskRequest);
     TaskResponse removeUserFromTask(UserTaskRequest userTaskRequest);
-    TaskResponse updateTaskStatus(Long id, Status status);
-    TaskResponse updateTaskPriorityStatus(Long id, PriorityStatus priorityStatus);
-    TaskResponse updateTaskDueDate(Long id, LocalDateTime dueDate);
+    Boolean updateTaskStatus(Long id, Status status);
+    Boolean updateTaskPriorityStatus(Long id, PriorityStatus priorityStatus);
+    Boolean updateTaskDueDate(Long id, LocalDateTime dueDate);
     Boolean deleteTask(Long id);
     TaskResponse getTaskById(Long id);
     List<TaskResponse> getAllTasksByProjectId(Long projectId);
