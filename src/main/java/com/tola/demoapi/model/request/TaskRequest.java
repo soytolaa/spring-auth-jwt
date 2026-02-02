@@ -2,6 +2,8 @@ package com.tola.demoapi.model.request;
 
 import com.tola.demoapi.model.enums.PriorityStatus;
 import com.tola.demoapi.model.enums.Status;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -21,6 +23,6 @@ public class TaskRequest {
     private PriorityStatus priorityStatus;
     private Long projectId;
     private List<Long> assignees;
-    private LocalDateTime assignedAt;
-    private LocalDateTime dueAt;
+    private LocalDate assignedAt;
+    private LocalDate dueAt;
 }

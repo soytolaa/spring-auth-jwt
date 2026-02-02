@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.tola.demoapi.model.enums.Status;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -32,8 +33,8 @@ public class Task {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long assigner;
-    private LocalDateTime assignedAt;
-    private LocalDateTime dueAt;
+    private LocalDate assignedAt;
+    private LocalDate dueAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     @JsonIgnoreProperties({ "tasks", "userProjects" })

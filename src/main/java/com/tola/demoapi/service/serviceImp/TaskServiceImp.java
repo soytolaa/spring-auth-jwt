@@ -19,6 +19,7 @@ import com.tola.demoapi.exception.BadRequestException;
 import com.tola.demoapi.model.enums.Status;
 import com.tola.demoapi.model.enums.PriorityStatus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -67,7 +68,7 @@ public class TaskServiceImp implements TaskService {
                 .priorityStatus(taskRequest.getPriorityStatus())
                 .project(project)
                 .assigner(getUser().getUserId())
-                .assignedAt(LocalDateTime.now())
+                .assignedAt(LocalDate.now())
                 .dueAt(taskRequest.getDueAt())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -189,7 +190,7 @@ public class TaskServiceImp implements TaskService {
     }
 
     @Override
-    public Boolean updateTaskDueDate(Long id, LocalDateTime dueDate) {
+    public Boolean updateTaskDueDate(Long id, LocalDate dueDate) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new NotFoundException("Task not found"));
         task.setDueAt(dueDate);
         return true;

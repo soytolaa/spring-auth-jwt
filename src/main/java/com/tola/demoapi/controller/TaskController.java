@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -105,7 +107,7 @@ public class TaskController {
     @Operation(summary = "Update task due date")
     public ResponseEntity<?> updateTaskDueDate(
             @PathVariable Long id,
-            @Parameter(description = "Due date and time for the task", required = true, schema = @Schema(type = "string", format = "date-time", example = "2026-02-01T10:00:00")) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate) {
+            @Parameter(description = "Due date and time for the task", required = true, schema = @Schema(type = "string", format = "date-time", example = "2026-02-01")) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dueDate) {
         ApiResponse<?> response = ApiResponse.builder()
                 .message("Task due date updated successfully")
                 .payload(taskService.updateTaskDueDate(id, dueDate))

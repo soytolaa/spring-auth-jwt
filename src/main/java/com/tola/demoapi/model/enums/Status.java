@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum Status {
-    PENDING("pending"),
-    PROGRESS("progress"),
-    COMPLETED("completed"),
-    CANCELLED("cancelled"),
-    HOLD("hold"),
-    FEEDBACK("feedback");
+    PENDING("PENDING"),
+    PROGRESS("PROGRESS"),
+    COMPLETED("COMPLETED"),
+    CANCELLED("CANCELLED"),
+    HOLD("HOLD"),
+    FEEDBACK("FEEDBACK");
     private String value;
 }
