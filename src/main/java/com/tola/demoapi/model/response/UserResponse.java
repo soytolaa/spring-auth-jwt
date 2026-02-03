@@ -2,6 +2,7 @@ package com.tola.demoapi.model.response;
 
 import java.time.LocalDateTime;
 
+import com.tola.demoapi.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class UserResponse {
     private String type;
     private Boolean isVerified;
     private Boolean isActive;
+    private Role role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

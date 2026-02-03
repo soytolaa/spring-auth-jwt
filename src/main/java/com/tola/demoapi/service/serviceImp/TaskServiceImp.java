@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import com.tola.demoapi.model.request.UserTaskRequest;
 
@@ -207,18 +208,22 @@ public class TaskServiceImp implements TaskService {
     public List<TaskResponse> getAllTasksByProjectId(Long projectId) {
         List<Task> tasks = taskRepository.findByProjectId(projectId)
                 .orElseThrow(() -> new NotFoundException("Tasks not found"));
-
         return tasks.stream()
                 .map(task -> {
                     // Get assignees for this specific task only (no duplicates)
                     List<UserResponse> assignees = new ArrayList<>();
                     task.getUserTasks().forEach(userTask -> {
                         User user = userTask.getUser();
+                        // Find the UserProject to get the role for this user in this project
+                        Optional<UserProject> userProject = userProjectRepository
+                                .findByUserUserIdAndProjectId(user.getUserId(), task.getProject().getId());
+                        
                         assignees.add(UserResponse.builder()
                                 .userId(user.getUserId())
                                 .email(user.getEmail())
                                 .userName(user.getUsername())
                                 .type(String.valueOf(user.getType()))
+                                .role(userProject.map(UserProject::getRole).orElse(null)) // Get role from UserProject, or null if not found
                                 .isVerified(user.getIsVerified())
                                 .isActive(user.getIsActive())
                                 .build());

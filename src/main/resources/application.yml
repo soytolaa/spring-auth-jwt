@@ -44,11 +44,11 @@ springdoc:
     path: /swagger-ui
 
 # logging
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate.sql: DEBUG
-    com.tola.demoapi: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.web: DEBUG
+#    org.hibernate.sql: DEBUG
+#    com.tola.demoapi: DEBUG
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

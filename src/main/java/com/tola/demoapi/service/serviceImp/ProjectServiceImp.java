@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,10 @@ public class ProjectServiceImp implements ProjectService {
     private final ProjectMapper projectMapper;
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
+
+    public User getUser() {
+        return userRepository.findById(1L).orElseThrow(() -> new NotFoundException("User not found"));
+    }
 
     @Override
     public List<ProjectResponse> getAllProjectsByUser() { // add members in each project
@@ -107,25 +112,29 @@ public class ProjectServiceImp implements ProjectService {
     public List<UserResponse> getUserInProject(Long id) {
         List<UserProject> userProjects = userProjectRepository.findByProjectId(id)
                 .orElseThrow(() -> new NotFoundException("Project not found"));
+
         return userProjects.stream()
-                .map(userProject -> userRepository.findById(userProject.getUser().getUserId())
-                        .orElseThrow(() -> new NotFoundException("User not found")))
-                .map(user -> UserResponse.builder()
-                        .userId(user.getUserId())
-                        .email(user.getEmail())
-                        .userName(user.getUsername())
-                        .type(String.valueOf(user.getType()))
-                        .isVerified(user.getIsVerified())
-                        .isActive(user.getIsActive())
-                        .createdAt(user.getCreatedAt())
-                        .updatedAt(user.getUpdatedAt())
-                        .build())
+                .map(userProject -> {
+                    User user = userProject.getUser();
+                    return UserResponse.builder()
+                            .userId(user.getUserId())
+                            .email(user.getEmail())
+                            .userName(user.getUsername())
+                            .type(String.valueOf(user.getType()))
+                            .isVerified(user.getIsVerified())
+                            .isActive(user.getIsActive())
+                            .role(userProject.getRole()) // Get role from UserProject
+                            .createdAt(user.getCreatedAt())
+                            .updatedAt(user.getUpdatedAt())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
     public Boolean joinProjectByCode(UUID code) {
-        Project project = projectRepository.findByCode(code).orElseThrow(() -> new NotFoundException("Project not found"));
+        Project project = projectRepository.findByCode(code)
+                .orElseThrow(() -> new NotFoundException("Project not found"));
         User user = userRepository.findById(1L).orElseThrow(() -> new NotFoundException("User not found"));
         userProjectRepository.save(UserProject.builder()
                 .project(project)
