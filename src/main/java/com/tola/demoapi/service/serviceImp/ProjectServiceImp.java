@@ -13,13 +13,12 @@ import com.tola.demoapi.repository.ProjectRepository;
 import com.tola.demoapi.repository.UserProjectRepository;
 import com.tola.demoapi.repository.UserRepository;
 import com.tola.demoapi.service.ProjectService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.tola.demoapi.exception.BadRequestException;
@@ -122,6 +121,19 @@ public class ProjectServiceImp implements ProjectService {
                         .updatedAt(user.getUpdatedAt())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean joinProjectByCode(UUID code) {
+        Project project = projectRepository.findByCode(code).orElseThrow(() -> new NotFoundException("Project not found"));
+        User user = userRepository.findById(1L).orElseThrow(() -> new NotFoundException("User not found"));
+        userProjectRepository.save(UserProject.builder()
+                .project(project)
+                .role(Role.ADMIN)
+                .joinedAt(LocalDateTime.now())
+                .user(user)
+                .build());
+        return true;
     }
 
 }

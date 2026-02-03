@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -108,5 +109,16 @@ public class ProjectController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
+    @PostMapping("/code")
+    @Operation(summary = "Get users in project by project id")
+    public ResponseEntity<?> joinProjectByCode(@RequestParam UUID code) {
+        ApiResponse<?> response = ApiResponse.builder()
+                .message("Join project by project code successfully")
+                .payload(projectService.joinProjectByCode(code))
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

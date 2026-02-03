@@ -19,6 +19,7 @@ public interface ProjectMapper {
     @Mapping(target = "updatedAt", expression = "java(LocalDateTime.now())")
     @Mapping(target = "createdBy", source = "user")
     @Mapping(target = "isActive", expression = "java(true)")
+    @Mapping(target = "code", expression = "java(java.util.UUID.randomUUID())")
     @Mapping(target = "tasks", expression = "java(new java.util.ArrayList<>())")
     @Mapping(target = "userProjects", expression = "java(new java.util.ArrayList<>())")
     Project toEntity(ProjectRequest projectRequest, User user);

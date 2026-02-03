@@ -4,9 +4,9 @@ spring:
 
   # postgres
   datasource:
-    url: jdbc:postgresql://localhost:5432/task_management
+    url: jdbc:postgresql://localhost:5432/demo
     username: postgres
-    password: 2003
+    password: 1234
   # Jpa
   jpa:
     hibernate:

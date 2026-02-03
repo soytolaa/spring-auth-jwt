@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class Project {
     private String name;
     private String description;
     private Boolean isActive;
+    private UUID code;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

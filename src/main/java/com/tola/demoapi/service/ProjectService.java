@@ -4,6 +4,7 @@ import com.tola.demoapi.model.request.ProjectRequest;
 import com.tola.demoapi.model.response.ProjectResponse;
 import com.tola.demoapi.model.response.UserResponse;
 import java.util.List;
+import java.util.UUID;
 
 public interface ProjectService {
     List<ProjectResponse> getAllProjectsByUser();
@@ -19,4 +20,6 @@ public interface ProjectService {
     Boolean deleteProject(Long id);
 
     List<UserResponse> getUserInProject(Long id);
+
+    Boolean joinProjectByCode(UUID code);
 }
