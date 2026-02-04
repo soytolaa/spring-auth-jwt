@@ -1,7 +1,7 @@
 package com.tola.demoapi.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.tola.demoapi.utils.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,19 +18,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.tola.demoapi.model.request.TaskRequest;
 import com.tola.demoapi.service.TaskService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PutMapping;
 import com.tola.demoapi.model.request.UserTaskRequest;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import com.tola.demoapi.model.enums.Status;
 import com.tola.demoapi.model.enums.PriorityStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
 @Tag(name = "Task", description = "Task API for task management")
-// @SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth")
+@CrossOrigin
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;

@@ -4,6 +4,7 @@ import com.tola.demoapi.model.request.ProjectRequest;
 import com.tola.demoapi.utils.ApiResponse;
 import com.tola.demoapi.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/projects")
 @Tag(name = "Project", description = "Project API for project management")
+@SecurityRequirement(name = "bearerAuth")
+@CrossOrigin
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;

@@ -1,5 +1,6 @@
 package com.tola.demoapi.service.serviceImp;
 
+import com.tola.demoapi.config.BeanConfig;
 import com.tola.demoapi.model.entities.Task;
 import com.tola.demoapi.model.entities.User;
 import com.tola.demoapi.model.entities.UserTask;
@@ -36,9 +37,14 @@ public class TaskServiceImp implements TaskService {
     private final TaskMapper taskMapper;
     private final UserTaskRepository userTaskRepository;
     private final UserProjectRepository userProjectRepository;
+    private final BeanConfig beanConfig;
 
     public User getUser() {
-        return userRepository.findById(1L).orElseThrow(() -> new NotFoundException("User not found"));
+        Long currentUserId = beanConfig.getCurrentUserId();
+        if (currentUserId == null) {
+            throw new NotFoundException("User not authenticated");
+        }
+        return userRepository.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
@@ -214,16 +220,17 @@ public class TaskServiceImp implements TaskService {
                     List<UserResponse> assignees = new ArrayList<>();
                     task.getUserTasks().forEach(userTask -> {
                         User user = userTask.getUser();
-                        // Find the UserProject to get the role for this user in this project
+                        // Find the UserProject to get the role for THIS user in THIS project
                         Optional<UserProject> userProject = userProjectRepository
                                 .findByUserUserIdAndProjectId(user.getUserId(), task.getProject().getId());
-                        
+
                         assignees.add(UserResponse.builder()
                                 .userId(user.getUserId())
                                 .email(user.getEmail())
                                 .userName(user.getUsername())
                                 .type(String.valueOf(user.getType()))
-                                .role(userProject.map(UserProject::getRole).orElse(null)) // Get role from UserProject, or null if not found
+                                .role(userProject.map(UserProject::getRole).orElse(null)) // Get role from UserProject,
+                                                                                          // or null if not found
                                 .isVerified(user.getIsVerified())
                                 .isActive(user.getIsActive())
                                 .build());

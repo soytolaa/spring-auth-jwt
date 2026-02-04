@@ -8,10 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.ModelAndView;
@@ -67,21 +65,27 @@ public class BeanConfig {
         return new ModelAndView();
     }
 
-    // @Bean
-    // public UUID getCurrentUserId() {
-    // Authentication authentication = SecurityContextHolder
-    // .getContext()
-    // .getAuthentication();
-    //
-    // if (authentication == null || !authentication.isAuthenticated()) {
-    // return null;
-    // }
-    // Object principal = authentication.getPrincipal();
-    //
-    // if (principal instanceof User user) {
-    // return user.getUserId();
-    // }
-    // return null;
-    // }
+    /**
+     * Get the current authenticated user's ID from SecurityContext
+     * 
+     * @return Long userId if authenticated, null otherwise
+     */
+    public Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+
+        // Check if principal is the User entity (which implements UserDetails)
+        if (principal instanceof User user) {
+            return user.getUserId();
+        }
+
+        // If principal is a String (username), you might need to load the user
+        // For now, return null if it's not a User instance
+        return null;
+    }
 
 }
