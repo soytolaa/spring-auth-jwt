@@ -39,13 +39,14 @@ public class SecurityConfig {
                                                                 "/api/v1/auth/verify-otp",
                                                                 "/api/v1/auth/recovery-password",
                                                                 "/api/v1/auth/forgot-password",
-                                                                "/api/v1/auth/resend-otp")
+                                                                "/api/v1/auth/resend-otp",
+                                                                   "/api/v1/auth/oauth-login"
+                                                )
                                                 .permitAll()
                                                 .requestMatchers("/api/v1/tasks/**", "/api/v1/projects/**",
                                                                 "/api/v1/auth/user-detail",
                                                                 "/api/v1/auth/change-password")
                                                 .authenticated()
-                                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntrypoint))
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

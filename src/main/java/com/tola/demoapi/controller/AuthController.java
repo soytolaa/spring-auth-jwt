@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tola.demoapi.model.request.UserRequest;
 import com.tola.demoapi.model.request.ForgetRequest;
 import com.tola.demoapi.model.request.UserLoginRequest;
+import com.tola.demoapi.model.request.OAuthLoginRequest;
 import com.tola.demoapi.utils.ApiResponse;
 import com.tola.demoapi.service.AuthService;
 
@@ -143,6 +144,20 @@ public class AuthController {
                                 .statusCode(HttpStatus.OK.value())
                                 .timestamp(LocalDateTime.now())
                                 .build();
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+
+
+        @PostMapping("/oauth-login")
+        @Operation(summary = "OAuth login with email")
+        public ResponseEntity<?> oauthLogin(@RequestBody OAuthLoginRequest oauthLoginRequest) {
+                ApiResponse<?> response = ApiResponse.builder()
+                        .message("OAuth login successfully")
+                        .payload(authService.oauthLogin(oauthLoginRequest))
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .timestamp(LocalDateTime.now())
+                        .build();
                 return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 }

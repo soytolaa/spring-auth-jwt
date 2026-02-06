@@ -1,6 +1,7 @@
 package com.tola.demoapi.config;
 
 import com.tola.demoapi.model.entities.User;
+import com.tola.demoapi.repository.UserRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
@@ -17,10 +18,13 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.context.Context;
 
+import java.util.Optional;
+
 @Configuration
 @RequiredArgsConstructor
 public class BeanConfig {
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -70,22 +74,23 @@ public class BeanConfig {
      * 
      * @return Long userId if authenticated, null otherwise
      */
-    public Long getCurrentUserId() {
+    public Optional<Long> getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            return Optional.empty();
         }
+
         Object principal = authentication.getPrincipal();
 
-        // Check if principal is the User entity (which implements UserDetails)
         if (principal instanceof User user) {
-            return user.getUserId();
+            return userRepository
+                    .findByEmail(user.getEmail())
+                    .map(User::getUserId);
         }
 
-        // If principal is a String (username), you might need to load the user
-        // For now, return null if it's not a User instance
-        return null;
+        return Optional.empty();
     }
+
 
 }

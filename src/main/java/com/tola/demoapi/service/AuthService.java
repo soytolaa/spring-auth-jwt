@@ -3,6 +3,7 @@ package com.tola.demoapi.service;
 import com.tola.demoapi.model.request.UserRequest;
 import com.tola.demoapi.model.request.ForgetRequest;
 import com.tola.demoapi.model.request.UserLoginRequest;
+import com.tola.demoapi.model.request.OAuthLoginRequest;
 import com.tola.demoapi.model.response.TokenResponse;
 import com.tola.demoapi.model.response.UserResponse;
 import jakarta.mail.MessagingException;
@@ -24,4 +25,6 @@ public interface AuthService {
     UserResponse forgotPassword(ForgetRequest forgetRequest);
 
     UserResponse recovery(String email) throws MessagingException, UnsupportedEncodingException;
+
+    TokenResponse oauthLogin(OAuthLoginRequest oauthLoginRequest);
 }

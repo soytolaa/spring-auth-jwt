@@ -39,12 +39,8 @@ public class TaskServiceImp implements TaskService {
     private final UserProjectRepository userProjectRepository;
     private final BeanConfig beanConfig;
 
-    public User getUser() {
-        Long currentUserId = beanConfig.getCurrentUserId();
-        if (currentUserId == null) {
-            throw new NotFoundException("User not authenticated");
-        }
-        return userRepository.findById(currentUserId).orElseThrow(() -> new NotFoundException("User not found"));
+    public Long getUserId() {
+        return beanConfig.getCurrentUserId().orElse(null);
     }
 
     @Override
@@ -74,7 +70,7 @@ public class TaskServiceImp implements TaskService {
                 .status(taskRequest.getStatus())
                 .priorityStatus(taskRequest.getPriorityStatus())
                 .project(project)
-                .assigner(getUser().getUserId())
+                .assigner(getUserId())
                 .assignedAt(LocalDate.now())
                 .dueAt(taskRequest.getDueAt())
                 .createdAt(LocalDateTime.now())
@@ -152,8 +148,7 @@ public class TaskServiceImp implements TaskService {
         } else {
             // If no specific users provided, add all project members who aren't already
             // assigned
-            List<UserProject> userProjects = userProjectRepository.findByProjectId(project.getId())
-                    .orElseThrow(() -> new NotFoundException("No users found in this project"));
+            List<UserProject> userProjects = userProjectRepository.findByProjectId(project.getId());
 
             userProjects.forEach(userProject -> {
                 // Check if user is already assigned
@@ -212,8 +207,7 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public List<TaskResponse> getAllTasksByProjectId(Long projectId) {
-        List<Task> tasks = taskRepository.findByProjectId(projectId)
-                .orElseThrow(() -> new NotFoundException("Tasks not found"));
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
         return tasks.stream()
                 .map(task -> {
                     // Get assignees for this specific task only (no duplicates)
@@ -222,7 +216,7 @@ public class TaskServiceImp implements TaskService {
                         User user = userTask.getUser();
                         // Find the UserProject to get the role for THIS user in THIS project
                         Optional<UserProject> userProject = userProjectRepository
-                                .findByUserUserIdAndProjectId(user.getUserId(), task.getProject().getId());
+                                .findByProjectIdAndUserUserId(task.getProject().getId(), user.getUserId());
 
                         assignees.add(UserResponse.builder()
                                 .userId(user.getUserId())

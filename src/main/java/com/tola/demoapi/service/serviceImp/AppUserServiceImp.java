@@ -20,8 +20,4 @@ public class AppUserServiceImp implements UserDetailsService {
         Optional<User> user = userRepository.findByEmail(username);
         return user.orElseThrow(() -> new UsernameNotFoundException(username));
     }
-
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.tola.demoapi.model.entities.Otp;
 import com.tola.demoapi.model.entities.User;
 import com.tola.demoapi.model.request.ForgetRequest;
+import com.tola.demoapi.model.request.OAuthLoginRequest;
 import com.tola.demoapi.model.request.UserLoginRequest;
 import com.tola.demoapi.model.request.UserRequest;
 import com.tola.demoapi.model.response.TokenResponse;
@@ -228,4 +229,39 @@ public class AuthServiceImp implements AuthService {
         }
         return modelMapper.map(user.get(), UserResponse.class);
     }
+
+    @Override
+    public TokenResponse oauthLogin(OAuthLoginRequest oauthLoginRequest) {
+        Type type = oauthLoginRequest.getProvider().equalsIgnoreCase("google") ? Type.GOOGLE : Type.GITHUB;
+
+        Optional<User> userOpt = userRepository.findByEmailAndType(oauthLoginRequest.getEmail(), type);
+
+        User user;
+        if (userOpt.isPresent()) {
+            // User exists → just use it
+            user = userOpt.get();
+        } else {
+            // User does not exist → create new
+            user = User.builder()
+                    .email(oauthLoginRequest.getEmail())
+                    .userName(oauthLoginRequest.getName())
+                    .type(type)
+                    .role(Role.USER)
+                    .isVerified(true)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            user = userRepository.save(user);
+        }
+
+        String accessToken = jwtService.generateToken(user);
+
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .email(user.getEmail())
+                .userId(user.getUserId())
+                .build();
+    }
+
 }
