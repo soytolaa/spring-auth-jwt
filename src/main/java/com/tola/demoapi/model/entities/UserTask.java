@@ -20,11 +20,9 @@ public class UserTask {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({ "userTasks", "otps", "userProjects" })
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
-    @JsonIgnoreProperties({ "userTasks", "project" })
     private Task task;
 }

@@ -33,16 +33,17 @@ public class Task {
     private PriorityStatus priorityStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Long assigner;
+    @OneToOne(cascade = CascadeType.ALL)
+    private User assigner;
+    private List<User> assignees;
     private LocalDate assignedAt;
     private LocalDate dueAt;
+    @ManyToOne
+    private User createdBy;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({ "tasks", "userProjects" })
     private Project project;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({ "task" })
-    @Builder.Default
     private List<UserTask> userTasks = new ArrayList<>();
 }

@@ -26,7 +26,9 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import com.tola.demoapi.model.request.UserTaskRequest;
+import com.tola.demoapi.mapper.UserMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class TaskServiceImp implements TaskService {
     private final UserTaskRepository userTaskRepository;
     private final UserProjectRepository userProjectRepository;
     private final BeanConfig beanConfig;
+    private final UserMapper userMapper;
 
     public Long getUserId() {
         return beanConfig.getCurrentUserId().orElse(null);
@@ -57,25 +60,16 @@ public class TaskServiceImp implements TaskService {
 
                 // Check if user is a member of the project
                 if (!userProjectRepository.existsByUserUserIdAndProjectId(assigneeId, project.getId())) {
-                    throw new BadRequestException(
-                            "User with id " + assigneeId + " (" + user.getEmail()
-                                    + ") is not a member of this project");
+                    throw new BadRequestException("User with id " + assigneeId + " (" + user.getEmail()
+                            + ") is not a member of this project");
                 }
             }
         }
 
-        Task task = Task.builder()
-                .name(taskRequest.getName())
-                .description(taskRequest.getDescription())
-                .status(taskRequest.getStatus())
-                .priorityStatus(taskRequest.getPriorityStatus())
-                .project(project)
-                .assigner(getUserId())
-                .assignedAt(LocalDate.now())
-                .dueAt(taskRequest.getDueAt())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+        Task task = Task.builder().name(taskRequest.getName()).description(taskRequest.getDescription())
+                .status(taskRequest.getStatus()).priorityStatus(taskRequest.getPriorityStatus()).project(project)
+                .assigner(getUserId()).assignedAt(LocalDate.now()).dueAt(taskRequest.getDueAt()).createdBy(getUserId())
+                .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
         Task savedTask = taskRepository.save(task);
 
         // Assign users to task (all validated to be project members)
@@ -83,98 +77,93 @@ public class TaskServiceImp implements TaskService {
             taskRequest.getAssignees().forEach(assigneeId -> {
                 User user = userRepository.findById(assigneeId)
                         .orElseThrow(() -> new NotFoundException("User not found with id: " + assigneeId));
-                userTaskRepository.save(UserTask.builder()
-                        .user(user)
-                        .task(savedTask)
-                        .build());
+                userTaskRepository.save(UserTask.builder().user(user).task(savedTask).build());
             });
         }
 
         // Get assignees from saved task
         List<Long> assigneeIds = userTaskRepository.findByTaskId(savedTask.getId()).stream()
-                .map(userTask -> userTask.getUser().getUserId())
-                .collect(Collectors.toList());
+                .map(userTask -> userTask.getUser().getUserId()).collect(Collectors.toList());
         List<UserResponse> assignees = new ArrayList<>();
         savedTask.getUserTasks().forEach(userTask -> {
             User user = userTask.getUser();
-            assignees.add(UserResponse.builder()
-                    .userId(user.getUserId())
-                    .email(user.getEmail())
-                    .userName(user.getUsername())
-                    .type(String.valueOf(user.getType()))
-                    .isVerified(user.getIsVerified())
-                    .isActive(user.getIsActive())
-                    .build());
+            assignees.add(UserResponse.builder().userId(user.getUserId()).email(user.getEmail())
+                    .userName(user.getUsername()).type(String.valueOf(user.getType())).isVerified(user.getIsVerified())
+                    .isActive(user.getIsActive()).build());
         });
-        return taskMapper.toResponse(savedTask, assignees, project.getId());
+        return null;
     }
 
     @Override
     public TaskResponse addUserToTask(UserTaskRequest userTaskRequest) {
-        Task task = taskRepository.findById(userTaskRequest.getTaskId())
-                .orElseThrow(() -> new NotFoundException("Task not found"));
-
-        // Get the project from the task to ensure consistency
-        Project project = task.getProject();
-        if (project == null) {
-            throw new NotFoundException("Project not found for this task");
-        }
-
-        // If specific users provided, validate and add them
-        if (userTaskRequest.getUserIds() != null && !userTaskRequest.getUserIds().isEmpty()) {
-            for (Long userId : userTaskRequest.getUserIds()) {
-                // Check if user exists
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
-
-                // Check if user is a member of the project
-                if (!userProjectRepository.existsByUserUserIdAndProjectId(userId, project.getId())) {
-                    throw new BadRequestException(
-                            "User with id " + userId + " (" + user.getEmail() + ") is not a member of this project");
-                }
-
-                // Check if user is already assigned to this task
-                if (userTaskRepository.findByUserUserIdAndTaskId(userId, task.getId()).isPresent()) {
-                    throw new BadRequestException(
-                            "User with id " + userId + " (" + user.getEmail() + ") is already assigned to this task");
-                }
-
-                // Add user to task
-                userTaskRepository.save(UserTask.builder()
-                        .user(user)
-                        .task(task)
-                        .build());
-            }
-        } else {
-            // If no specific users provided, add all project members who aren't already
-            // assigned
-            List<UserProject> userProjects = userProjectRepository.findByProjectId(project.getId());
-
-            userProjects.forEach(userProject -> {
-                // Check if user is already assigned
-                if (userTaskRepository.findByUserUserIdAndTaskId(
-                        userProject.getUser().getUserId(), task.getId()).isEmpty()) {
-                    userTaskRepository.save(UserTask.builder()
-                            .user(userProject.getUser())
-                            .task(task)
-                            .build());
-                }
-            });
-        }
-
-        return taskMapper.toResponse(task, new ArrayList<>(),
-                project.getId());
+        // Task task =
+        // taskRepository.findById(userTaskRequest.getTaskId()).orElseThrow(() -> new
+        // NotFoundException("Task not found"));
+        //
+        // // Get the project from the task to ensure consistency
+        // Project project = task.getProject();
+        // if (project == null) {
+        // throw new NotFoundException("Project not found for this task");
+        // }
+        //
+        // // If specific users provided, validate and add them
+        // if (userTaskRequest.getUserIds() != null &&
+        // !userTaskRequest.getUserIds().isEmpty()) {
+        // for (Long userId : userTaskRequest.getUserIds()) {
+        // // Check if user exists
+        // User user = userRepository.findById(userId).orElseThrow(() -> new
+        // NotFoundException("User not found with id: " + userId));
+        //
+        // // Check if user is a member of the project
+        // if (!userProjectRepository.existsByUserUserIdAndProjectId(userId,
+        // project.getId())) {
+        // throw new BadRequestException("User with id " + userId + " (" +
+        // user.getEmail() + ") is not a member of this project");
+        // }
+        //
+        // // Check if user is already assigned to this task
+        // if (userTaskRepository.findByUserUserIdAndTaskId(userId,
+        // task.getId()).isPresent()) {
+        // throw new BadRequestException("User with id " + userId + " (" +
+        // user.getEmail() + ") is already assigned to this task");
+        // }
+        //
+        // // Add user to task
+        // userTaskRepository.save(UserTask.builder().user(user).task(task).build());
+        // }
+        // } else {
+        // // If no specific users provided, add all project members who aren't already
+        // // assigned
+        // List<UserProject> userProjects =
+        // userProjectRepository.findByProjectId(project.getId());
+        //
+        // userProjects.forEach(userProject -> {
+        // // Check if user is already assigned
+        // if
+        // (userTaskRepository.findByUserUserIdAndTaskId(userProject.getUser().getUserId(),
+        // task.getId()).isEmpty()) {
+        // userTaskRepository.save(UserTask.builder().user(userProject.getUser()).task(task).build());
+        // }
+        // });
+        // }
+        //
+        // return taskMapper.toResponse(task, new ArrayList<>(), project.getId());
+        return null;
     }
 
     @Override
     public TaskResponse removeUserFromTask(UserTaskRequest userTaskRequest) {
-        Task task = taskRepository.findById(userTaskRequest.getTaskId())
-                .orElseThrow(() -> new NotFoundException("Task not found"));
-        userTaskRequest.getUserIds().forEach(userId -> {
-            userTaskRepository.delete(userTaskRepository.findByUserUserIdAndTaskId(userId, userTaskRequest.getTaskId())
-                    .orElseThrow(() -> new NotFoundException("User task not found")));
-        });
-        return taskMapper.toResponse(task, new ArrayList<>(), task.getProject().getId());
+        // Task task =
+        // taskRepository.findById(userTaskRequest.getTaskId()).orElseThrow(() -> new
+        // NotFoundException("Task not found"));
+        // userTaskRequest.getUserIds().forEach(userId -> {
+        // userTaskRepository.delete(userTaskRepository.findByUserUserIdAndTaskId(userId,
+        // userTaskRequest.getTaskId()).orElseThrow(() -> new NotFoundException("User
+        // task not found")));
+        // });
+        // return taskMapper.toResponse(task, new ArrayList<>(),
+        // task.getProject().getId());
+        return null;
     }
 
     @Override
@@ -207,48 +196,20 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public List<TaskResponse> getAllTasksByProjectId(Long projectId) {
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
-        return tasks.stream()
-                .map(task -> {
-                    // Get assignees for this specific task only (no duplicates)
-                    List<UserResponse> assignees = new ArrayList<>();
-                    task.getUserTasks().forEach(userTask -> {
-                        User user = userTask.getUser();
-                        // Find the UserProject to get the role for THIS user in THIS project
-                        Optional<UserProject> userProject = userProjectRepository
-                                .findByProjectIdAndUserUserId(task.getProject().getId(), user.getUserId());
-
-                        assignees.add(UserResponse.builder()
-                                .userId(user.getUserId())
-                                .email(user.getEmail())
-                                .userName(user.getUsername())
-                                .type(String.valueOf(user.getType()))
-                                .role(userProject.map(UserProject::getRole).orElse(null)) // Get role from UserProject,
-                                                                                          // or null if not found
-                                .isVerified(user.getIsVerified())
-                                .isActive(user.getIsActive())
-                                .build());
-                    });
-                    return taskMapper.toResponse(task, assignees, task.getProject().getId());
-                })
-                .collect(Collectors.toList());
+        List<Task> tasks = taskRepository.findByProjectIdAndProjectUserProjectsUserUserId(projectId, getUserId());
+        return null;
     }
 
     @Override
     public TaskResponse getTaskById(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new NotFoundException("Task not found"));
-        List<UserResponse> assignees = new ArrayList<>();
-        task.getUserTasks().forEach(userTask -> {
-            User user = userTask.getUser();
-            assignees.add(UserResponse.builder()
-                    .userId(user.getUserId())
-                    .email(user.getEmail())
-                    .userName(user.getUsername())
-                    .type(String.valueOf(user.getType()))
-                    .isVerified(user.getIsVerified())
-                    .isActive(user.getIsActive())
-                    .build());
-        });
-        return taskMapper.toResponse(task, assignees, task.getProject().getId());
+        // Task task = taskRepository.findById(id).orElseThrow(() -> new
+        // NotFoundException("Task not found"));
+        // List<UserResponse> assignees = new ArrayList<>();
+        // task.getUserTasks().forEach(userTask -> {
+        // User user = userTask.getUser();
+        // assignees.add(UserResponse.builder().userId(user.getUserId()).email(user.getEmail()).userName(user.getUsername()).type(String.valueOf(user.getType())).isVerified(user.getIsVerified()).isActive(user.getIsActive()).build());
+        // });
+        // return taskMapper.toResponse(task, assignees, task.getProject().getId());
+        return null;
     }
 }

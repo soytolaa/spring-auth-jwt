@@ -16,6 +16,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("select t from Project t inner join UserProject u on t.id = u.project.id where u.user.userId = :userId")
     List<Project> findAllByUserId(@Param("userId") Long userId);
-
 //    List<Project> findByUserProjectsUserUserId(Long userId);
 }

@@ -37,7 +37,6 @@ public class Project {
     private List<UserProject> userProjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({ "project" })
     private List<Task> tasks = new ArrayList<>();
 
 }
