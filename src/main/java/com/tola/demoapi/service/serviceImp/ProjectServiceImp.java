@@ -7,12 +7,14 @@ import com.tola.demoapi.model.entities.User;
 import com.tola.demoapi.model.entities.UserProject;
 import com.tola.demoapi.model.enums.Role;
 import com.tola.demoapi.model.request.ProjectRequest;
+import com.tola.demoapi.model.request.UserProjectRequest;
 import com.tola.demoapi.model.response.ProjectResponse;
 import com.tola.demoapi.model.response.UserResponse;
 import com.tola.demoapi.repository.ProjectRepository;
 import com.tola.demoapi.repository.UserProjectRepository;
 import com.tola.demoapi.repository.UserRepository;
 import com.tola.demoapi.service.ProjectService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -36,7 +38,6 @@ import com.tola.demoapi.exception.NotFoundException;
 public class ProjectServiceImp implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserProjectRepository userProjectRepository;
-    private final ProjectMapper projectMapper;
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
     private final Logger logger = LoggerFactory.getLogger(ProjectServiceImp.class);
@@ -45,47 +46,43 @@ public class ProjectServiceImp implements ProjectService {
         return beanConfig.getCurrentUserId().orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+
+    public UUID code(){
+        return UUID.randomUUID();
+    }
+
     @Override
     public List<ProjectResponse> getAllProjectsByUser() {
-        List<ProjectResponse> projectResponses = new ArrayList<>();
-        List<Project> projects = projectRepository.findAllByUserId(getCurrentUserId());
-        projects.forEach(project -> {
-            Integer numberCount = userProjectRepository.countMember(project.getId());
-            projectResponses.add(ProjectResponse.builder().membersCount(numberCount).id(project.getId())
-                    .name(project.getName()).description(project.getDescription()).createdAt(project.getCreatedAt())
-                    .updatedAt(project.getUpdatedAt()).createdBy(project.getCreatedBy().getUserId())
-                    .code(project.getCode()).build());
-        });
-        return projectResponses;
+        return projectRepository.findDistinctProjectsByUserId(getCurrentUserId())
+                .stream()
+                .map(project -> project.toResponse(getCurrentUserId()))
+                .toList();
     }
 
     @Override
+    @Transactional
     public ProjectResponse createProject(ProjectRequest projectRequest) {
         User user = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        Project project = projectRepository.save(projectMapper.toEntity(projectRequest, user));
-        userProjectRepository.save(UserProject.builder()
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+        Project project = projectRepository.save(projectRequest.toEntity(getCurrentUserId(), code()));
+        UserProject userProject = UserProject.builder()
                 .project(project)
-                .role(Role.ADMIN)
-                .joinedAt(LocalDateTime.now())
                 .user(user)
-                .build());
-
-        return projectMapper.toResponse(project);
+                .build();
+        userProjectRepository.save(userProject);
+        return project.toResponse(getCurrentUserId());
     }
+
 
     @Override
+    @Transactional
     public ProjectResponse updateProject(Long id, ProjectRequest projectRequest) {
-        User user = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        if (user.getRole().equals(Role.ADMIN)) {
-            throw new BadRequestException("You are not authorized to update this project");
-        }
-        Project project = projectRepository.findById(id).orElseThrow(() -> new NotFoundException("Project not found"));
-        projectMapper.toUpdate(projectRequest, project);
-
-        return projectMapper.toResponse(projectRepository.save(project));
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Project not found"));
+        projectRequest.toUpdateEntity(project);
+        return project.toResponse(getCurrentUserId());
     }
+
 
     @Override
     public ProjectResponse addUserToProjectByEmail(Long id, String email) {
@@ -100,15 +97,16 @@ public class ProjectServiceImp implements ProjectService {
                 .joinedAt(LocalDateTime.now())
                 .user(user)
                 .build());
-        return projectMapper.toResponse(project);
+        return project.toResponse(getCurrentUserId());
     }
 
     @Override
+    @Transactional
     public ProjectResponse activeAndDeactiveProject(Long id, Boolean isActive) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new NotFoundException("Project not found"));
         project.setIsActive(isActive);
         project.setUpdatedAt(LocalDateTime.now());
-        return projectMapper.toResponse(projectRepository.save(project));
+        return project.toResponse(getCurrentUserId());
     }
 
     @Override
@@ -121,7 +119,6 @@ public class ProjectServiceImp implements ProjectService {
     @Override
     public List<UserResponse> getUserInProject(Long id) {
         List<UserProject> userProjects = userProjectRepository.findByProjectId(id);
-
         return userProjects.stream()
                 .map(userProject -> {
                     User user = userProject.getUser();

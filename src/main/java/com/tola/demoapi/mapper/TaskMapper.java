@@ -35,7 +35,7 @@ public class TaskMapper {
                 .build();
     }
 
-    public Task toEntity(TaskRequest taskRequest, Project project, User createdBy, User assigner) {
+    public Task toEntity(TaskRequest taskRequest, Project project, Long createdBy, Long assigner) {
         return Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())

@@ -14,7 +14,11 @@ import java.util.UUID;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByCode(UUID code);
 
-    @Query("select t from Project t inner join UserProject u on t.id = u.project.id where u.user.userId = :userId")
-    List<Project> findAllByUserId(@Param("userId") Long userId);
-//    List<Project> findByUserProjectsUserUserId(Long userId);
+    @Query("""
+    SELECT DISTINCT p
+    FROM Project p
+    JOIN p.userProjects up
+    WHERE up.user.id = :userId and p.isActive=true ORDER BY p.updatedAt desc 
+""")
+    List<Project> findDistinctProjectsByUserId(Long userId);
 }

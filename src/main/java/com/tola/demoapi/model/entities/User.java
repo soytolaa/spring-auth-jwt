@@ -1,10 +1,15 @@
 package com.tola.demoapi.model.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.tola.demoapi.model.response.UserResponse;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,19 +50,21 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "type")
-    private Type type; // social login or credential login
+    private Type type;
 
+    @CreatedDate
     @Column(name = "created_at")
-    private LocalDateTime createdAt; // created at
+    private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // last updated at
+    private LocalDateTime updatedAt;
 
     @Column(name = "is_active")
-    private Boolean isActive; // true if the user is active
+    private Boolean isActive;
 
     @Column(name = "is_verified")
-    private Boolean isVerified; // true if the user is verified
+    private Boolean isVerified;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Otp> otps;
@@ -94,4 +101,15 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isActive != null && isActive;
     }
+
+
+    public UserResponse toResponse(Role role) {
+        return UserResponse.builder()
+                .userId(userId)
+                .userName(userName)
+                .email(email)
+                .role(role)
+                .build();
+    }
+
 }

@@ -19,6 +19,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.context.Context;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Configuration
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public class BeanConfig {
         engine.setTemplateResolver(templateResolver());
         return engine;
     }
+
 
     @Bean
     MimeMessage message() {

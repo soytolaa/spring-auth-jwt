@@ -1,7 +1,9 @@
 package com.tola.demoapi.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tola.demoapi.config.BeanConfig;
 import com.tola.demoapi.model.enums.Role;
+import com.tola.demoapi.model.response.ProjectResponse;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,9 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "projects")
@@ -26,17 +31,33 @@ public class Project {
     private String description;
     private Boolean isActive;
     private UUID code;
+
+    @CreatedDate
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy;
+    @CreatedBy
+    private Long createdBy;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<UserProject> userProjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
+
+    public ProjectResponse toResponse(Long userId) {
+        return ProjectResponse.builder()
+                .id(this.id)
+                .name(this.name)
+                .description(this.description)
+                .createdBy(userId)
+                .createdAt(this.createdAt)
+                .updatedAt(this.updatedAt)
+                .code(this.code)
+                .membersCount(null)
+                .build();
+    }
 }

@@ -9,6 +9,7 @@ import com.tola.demoapi.model.response.TaskResponse;
 import com.tola.demoapi.model.response.UserResponse;
 import com.tola.demoapi.repository.*;
 import com.tola.demoapi.service.TaskService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.tola.demoapi.model.request.UserTaskRequest;
@@ -47,52 +49,29 @@ public class TaskServiceImp implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskResponse createTask(TaskRequest taskRequest) {
+        Long currentUserId = getUserId();
         Project project = projectRepository.findById(taskRequest.getProjectId())
                 .orElseThrow(() -> new NotFoundException("Project not found"));
 
-        // Validate that all assignees are members of the project
-        if (taskRequest.getAssignees() != null && !taskRequest.getAssignees().isEmpty()) {
-            for (Long assigneeId : taskRequest.getAssignees()) {
-                // Check if user exists
-                User user = userRepository.findById(assigneeId)
-                        .orElseThrow(() -> new NotFoundException("User not found with id: " + assigneeId));
+        List<User> assignees = userRepository.findAllById(taskRequest.getAssignees());
 
-                // Check if user is a member of the project
-                if (!userProjectRepository.existsByUserUserIdAndProjectId(assigneeId, project.getId())) {
-                    throw new BadRequestException("User with id " + assigneeId + " (" + user.getEmail()
-                            + ") is not a member of this project");
-                }
-            }
+        if (assignees.size() != taskRequest.getAssignees().size()) {
+            Set<Long> foundIds = assignees.stream().map(User::getUserId).collect(Collectors.toSet());
+            List<Long> missingIds = taskRequest.getAssignees().stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .toList();
+            throw new NotFoundException("User ids not found: " + missingIds);
         }
 
-        Task task = Task.builder().name(taskRequest.getName()).description(taskRequest.getDescription())
-                .status(taskRequest.getStatus()).priorityStatus(taskRequest.getPriorityStatus()).project(project)
-                .assigner(getUserId()).assignedAt(LocalDate.now()).dueAt(taskRequest.getDueAt()).createdBy(getUserId())
-                .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
-        Task savedTask = taskRepository.save(task);
+        User assigner = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        // Assign users to task (all validated to be project members)
-        if (taskRequest.getAssignees() != null && !taskRequest.getAssignees().isEmpty()) {
-            taskRequest.getAssignees().forEach(assigneeId -> {
-                User user = userRepository.findById(assigneeId)
-                        .orElseThrow(() -> new NotFoundException("User not found with id: " + assigneeId));
-                userTaskRepository.save(UserTask.builder().user(user).task(savedTask).build());
-            });
-        }
-
-        // Get assignees from saved task
-        List<Long> assigneeIds = userTaskRepository.findByTaskId(savedTask.getId()).stream()
-                .map(userTask -> userTask.getUser().getUserId()).collect(Collectors.toList());
-        List<UserResponse> assignees = new ArrayList<>();
-        savedTask.getUserTasks().forEach(userTask -> {
-            User user = userTask.getUser();
-            assignees.add(UserResponse.builder().userId(user.getUserId()).email(user.getEmail())
-                    .userName(user.getUsername()).type(String.valueOf(user.getType())).isVerified(user.getIsVerified())
-                    .isActive(user.getIsActive()).build());
-        });
-        return null;
+        Task task = taskRepository.save(taskRequest.toEntity(project, currentUserId, assignees));
+        return task.taskResponse(assigner, assignees);
     }
+
 
     @Override
     public TaskResponse addUserToTask(UserTaskRequest userTaskRequest) {
@@ -196,7 +175,8 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public List<TaskResponse> getAllTasksByProjectId(Long projectId) {
-        List<Task> tasks = taskRepository.findByProjectIdAndProjectUserProjectsUserUserId(projectId, getUserId());
+        List<Task> tasks = taskRepository.findAllByProjectIdWithUsers(projectId);
+        System.err.println("###=========>"+tasks);
         return null;
     }
 

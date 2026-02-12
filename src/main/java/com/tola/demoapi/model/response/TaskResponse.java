@@ -1,5 +1,6 @@
 package com.tola.demoapi.model.response;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.time.LocalDateTime;
 import com.tola.demoapi.model.enums.PriorityStatus;
@@ -23,8 +24,8 @@ public class TaskResponse {
     private Long projectId;
     private UserResponse assigner;
     private List<UserResponse> assignees;
-    private LocalDateTime assignedAt;
-    private LocalDateTime dueAt;
+    private LocalDate assignedAt;
+    private LocalDate dueAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
